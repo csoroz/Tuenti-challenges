@@ -36,6 +36,7 @@ parse = map read . take 2 . lines
 
 out = putStrLn . maybe "Not connected" (("Connected at "++) . show)
 
+-- Preprocess calls with: Calls.exe < phone_call.log > calls.log
 main = do
     ab <- parse <$> getContents
     withFile "calls.log" ReadMode $ \h -> do
