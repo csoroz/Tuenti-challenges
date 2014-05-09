@@ -1,4 +1,4 @@
 Tuenti
 ======
 
-(Tuenti Challenges)[https://contest.tuenti.net]
+[Tuenti Challenges](https://contest.tuenti.net)
