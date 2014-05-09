@@ -6,10 +6,9 @@ type Grid = UArray (Int,Int) Bool
  
 life :: Grid -> Grid
 life a = listArray b $ map alive (range b)
-  where alive p = v && n == 2 || n == 3
+  where alive p = a!p && n == 2 || n == 3
           where n = count $ map (a!) $ neighbours p
                 count = length . filter id
-                v = a!p
         b = bounds a
         neighbours (x,y) = filter (inRange b) $ map go
                 [(-1,-1),(0,-1),(1,-1),
