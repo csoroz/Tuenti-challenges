@@ -1,7 +1,7 @@
 import Data.List
 import Data.Maybe
 
-connect valid a b xs = map (a:) (go a (b:xs))
+connect valid a b xs = map (a:) $ go a (b:xs)
     where go a xs
             | a == b    = [[]]
             | otherwise = [x:path | x <- xs, valid a x, path <- go x (xs \\ [x])]
