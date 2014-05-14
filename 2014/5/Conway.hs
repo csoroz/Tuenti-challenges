@@ -11,9 +11,9 @@ life a = listArray b $ map alive (range b)
                 count = length . filter id
         b = bounds a
         neighbours (x,y) = filter (inRange b) $ map go
-                [(-1,-1),(0,-1),(1,-1),
-                 (-1, 0),       (1, 0),
-                 (-1, 1),(0, 1),(1, 1)]
+                [(-1,-1),(0,-1),(1,-1)
+                ,(-1, 0),       (1, 0)
+                ,(-1, 1),(0, 1),(1, 1)]
             where go (dx,dy) = (x+dx,y+dy)
 
 loop :: Eq a => [a] -> (Int,Int)
