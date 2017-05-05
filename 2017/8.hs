@@ -33,10 +33,11 @@ clean :: Text -> Maybe Integer
 clean x = if T.all isDigit y then Just (readI y) else Nothing
   where y = T.map toDigit $ T.strip x
 
-printCase (i,n) = concat ["Case #",show i,": ", p n]
-  where p Nothing = "N/A"
-        p (Just n) = printf "%x" n
-printCases = mapM_ (putStrLn . printCase) . zip [1..]
+showCase (i,n) = concat ["Case #",show i,": ", p n]
+  where p (Just n) = printf "%x" n
+        p Nothing = "N/A"
 
-main = printCases . map clean . g . T.lines . T.decodeUtf16LE =<< B.getContents
+showCases = mapM_ (putStrLn . showCase) . zip [1..]
+
+main = showCases . map clean . g . T.lines . T.decodeUtf16LE =<< B.getContents
   where g (l:ls) = take c ls where c = readI $ T.dropWhile (not.isDigit) l

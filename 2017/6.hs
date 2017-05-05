@@ -32,7 +32,7 @@ solve (n,xs) = spLength 1 n gr
 
 byLines f = interact $ unlines . f . lines
 
-printCase (i,x) = concat ["Case #",show i,": ", show x]
+showCase (i,x) = concat ["Case #",show i,": ", show x]
 
 parse [] = []
 parse (x:xs) = (read n, map g ys) : parse zs
@@ -42,5 +42,5 @@ parse (x:xs) = (read n, map g ys) : parse zs
     g = f . take 3 . words
       where f [a,b,y] = (read a, read b, read y)
 
-main = byLines $ map printCase . zip [1..] . map solve . g
+main = byLines $ map showCase . zip [1..] . map solve . g
   where g (l:ls) = take (read l) (parse ls)

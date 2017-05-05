@@ -12,11 +12,11 @@ trips xs = [[x,y,z] | x:ys <- tails xs, y:z:zs <- tails ys, x+y > z]
 
 byLines f = interact $ unlines . f . lines
 
-printCase (i,n) = concat ["Case #",show i,": ",p n]
+showCase (i,n) = concat ["Case #",show i,": ",p n]
   where p Nothing = "IMPOSSIBLE"
         p (Just n) = show n
-printCases = map printCase . zip [1..]
+showCases = map showCase . zip [1..]
 
-main = byLines $ printCases . map (triangle . f . words) . g
+main = byLines $ showCases . map (triangle . f . words) . g
   where g (l:ls) = take t ls where t = read l
         f (n:xs) = take (read n) $ map read xs

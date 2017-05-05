@@ -11,8 +11,8 @@ chop n xs = ys : chop n zs where (ys,zs) = splitAt n xs
 
 byLines f = interact $ unlines . f . lines
 
-printCase (i,n) = concat ["Case #",show i,": ",show n]
+showCase (i,n) = concat ["Case #",show i,": ",show n]
 
-main = byLines $ map printCase . zip [1..] . map (pizzas . f) . g
+main = byLines $ map showCase . zip [1..] . map (pizzas . f) . g
   where g (l:ls) = take t (chop 2 ls) where t = read l
         f [n,xs] = take (read n) $ map read $ words xs
