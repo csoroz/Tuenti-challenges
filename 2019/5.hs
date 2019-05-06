@@ -1,7 +1,7 @@
-import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map,(!))
-import qualified Data.Array.Unboxed as UA
+import qualified Data.Map.Strict as Map
 import Data.Array.Unboxed (UArray)
+import qualified Data.Array.Unboxed as UA
 import Data.Tuple
 import Data.Char
 
