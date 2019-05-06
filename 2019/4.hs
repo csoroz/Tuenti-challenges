@@ -9,8 +9,8 @@ lcms = foldl1' lcm
 
 solve :: [Integer] -> Rational
 solve as = n % m
-  where (n,m) = foldr f (0,0) ys
-                where f (a,k) (n,m) = (n + kx, m + div kx a)
+  where (n,m) = foldl f (0,0) ys
+                where f (n,m) (a,k) = (n + kx, m + div kx a)
                                       where kx = k*x
         ys = compress as
         x = lcms $ map (uncurry (*)) ys
