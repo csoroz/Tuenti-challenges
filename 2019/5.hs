@@ -17,7 +17,7 @@ keys = Map.fromList $ map swap (assocs typewriter)
 (a,b) <+> (x,y) = (add 4 a x, add 10 b y)
     where add m a b = (a + b) `mod` m
 
-decript (a,s) = map g s
+decrypt (a,s) = map g s
   where
     g x | isSpace x = x
         | otherwise = typewriter ! (d <+> (keys Map.! x))
@@ -32,5 +32,5 @@ showCase (i,s) = concat ["Case #",show i,": ",s]
 parse (x:s:xs) = (head x, s) : parse xs
 parse _ = []
 
-main = byLines $ map showCase . zip [1..] . map decript . g
+main = byLines $ map showCase . zip [1..] . map decrypt . g
   where g (l:ls) = take (read l) (parse ls)
