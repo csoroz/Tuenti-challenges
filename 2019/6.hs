@@ -47,8 +47,7 @@ byLines f = interact $ unlines . f . lines
 showCase (i,m) = concat ["Case #", show i, ": ", s]
   where s = maybe "AMBIGUOUS" (intersperse ' ') m
 
-parse (x:xs) = ws : parse zs
-  where (ws,zs) = splitAt (read x) xs
+parse (x:xs) = ws : parse zs where (ws,zs) = splitAt (read x) xs
 parse _ = []
 
 main = byLines $ map showCase . zip [1..] . map alphabet . g
