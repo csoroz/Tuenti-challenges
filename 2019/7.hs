@@ -46,9 +46,8 @@ byLines f = interact $ unlines . f . lines
 showCase (i,s) = concat ["Case #",show i,": ",s]
 
 parse (m:xs) = (concat a, concat b) : parse zs
-  where
-    (a,n:ys) = splitAt (read m) xs
-    (b,zs) = splitAt (read n) ys
+  where (a,n:ys) = splitAt (read m) xs
+        (b,zs)   = splitAt (read n) ys
 parse _ = []
 
 main = byLines $ map showCase . zip [1..] . map solve . g
