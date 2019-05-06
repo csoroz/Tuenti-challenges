@@ -12,13 +12,13 @@ rotate n xs = take xs (drop n (cycle xs))
 decompose :: Int -> Int -> Maybe [Int]
 decompose n x
   | y > n*122 = Nothing
-  | otherwise = Just (replicate (i-1) 48 ++ d:replicate (n-i) 122)
+  | otherwise = Just (replicate (n-i-1) 48 ++ d:replicate i 122)
   where above m = head . dropWhile (<m) . iterate (+256)
-        y = above (48*n) x
-        (i,d) = g n
+        y = above (n*48) x
+        (i,d) = g 0
           where g i | d >= 48 && 122 >= d = (i,d)
-                    | otherwise = g (i-1)
-                    where d = y - (48*(i-1) + 122*(n-i))
+                    | otherwise = g (i+1)
+                    where d = y - ((n-i-1)*48 + i*122)
 
 update a f i = a // [(i, f (a!i))]
 
