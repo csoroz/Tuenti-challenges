@@ -12,8 +12,8 @@ solve as = n % m
   where (n,m) = foldl f (0,0) ys
                 where f (n,m) (a,k) = (n + kx, m + div kx a)
                                       where kx = k*x
-        ys = compress as
-        x = lcms $ map (uncurry (*)) ys
+                      x = lcms $ map (uncurry (*)) ys
+                      ys = compress as
 
 byLines f = interact $ unlines . f . lines
 
