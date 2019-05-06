@@ -32,13 +32,14 @@ solve (xs,ys) = map chr $ concat $ transpose $ head $ catMaybes $ map go [0..]
   where [as,zs] = [a++"---","---"++z] where [a,z] = splitOn "------" ys
         [x,a,z] = map (map fromIntegral . elems . hash) [xs,as,zs]
         [x',a'] = map (rotate m) [x,a]
+        t = zipWith (-) x' a'
         l = length as
         m = mod l 16
-        go i = sequence $ map (uncurry decompose) $ zip ns ds
+        go i = sequence $ map (uncurry decompose) (zip ns ds)
           where
             (n,k) = divMod i 16
             r = mod (16-l-k+m) 16
-            ds = zipWith (-) x' $ zipWith (+) a' (rotate r z)
+            ds = zipWith (-) t (rotate r z)
             ns = replicate k (n+1) ++ replicate (16-k) n
 
 byLines f = interact $ unlines . f . lines
