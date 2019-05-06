@@ -14,8 +14,7 @@ solve as = n % m
           where f (a,k) (n,m) = (n + kx, m + div kx a)
                               where kx = k*x
     ys = compress as
-    ps = map pr ys where pr (a,k) = a*k
-    x = lcms ps
+    x = lcms $ map (uncurry (*)) ys
 
 byLines f = interact $ unlines . f . lines
 
