@@ -1,4 +1,4 @@
-import Data.Map.Strict (Map,(!))
+import Data.Map (Map,(!))
 import qualified Data.Map.Strict as Map
 import Data.Array.Unboxed (UArray)
 import qualified Data.Array.Unboxed as UA
