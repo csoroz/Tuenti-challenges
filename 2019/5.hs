@@ -1,18 +1,21 @@
 import qualified Data.Map.Strict as Map
-import Data.Array.Unboxed
+import Data.Map.Strict (Map,(!))
+import qualified Data.Array.Unboxed as UA
+import Data.Array.Unboxed (UArray)
 import Data.Tuple
 import Data.Char
 
 typewriter :: UArray (Int,Int) Char
-typewriter = listArray ((0,0),(3,9)) $ concat
-                ["1234567890"
-                ,"QWERTYUIOP"
-                ,"ASDFGHJKL;"
-                ,"ZXCVBNM,.-"]
+typewriter = UA.listArray ((0,0),(3,9)) $ concat
+                        ["1234567890"
+                        ,"QWERTYUIOP"
+                        ,"ASDFGHJKL;"
+                        ,"ZXCVBNM,.-"]
 
-keys :: Map.Map Char (Int,Int)
-keys = Map.fromList $ map swap (assocs typewriter)
+keys :: Map Char (Int,Int)
+keys = Map.fromList $ map swap (UA.assocs typewriter)
 
+infixl 6 <->, <+>
 (a,b) <-> (x,y) = (a - x, b - y)
 (a,b) <+> (x,y) = (add 4 a x, add 10 b y)
     where add m a b = (a + b) `mod` m
@@ -20,9 +23,9 @@ keys = Map.fromList $ map swap (assocs typewriter)
 decrypt (a,s) = map g s
   where
     g x | isSpace x = x
-        | otherwise = typewriter ! (d <+> (keys Map.! x))
-    x = keys Map.! a
-    z = keys Map.! (last s)
+        | otherwise = typewriter UA.! (d <+> keys ! x)
+    x = keys ! a
+    z = keys ! (last s)
     d = x <-> z
 
 byLines f = interact $ unlines . f . lines
