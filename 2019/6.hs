@@ -6,9 +6,7 @@ import Data.Graph
 import Data.List
 import Data.Maybe
 
-pairs :: [a] -> [(a,a)]
-pairs (a:x:xs) = (a,x) : pairs (x:xs)
-pairs _ = []
+pairs xs = zip xs (tail xs)
 
 groupPairs :: Eq a => [(a,b)] -> [(a,[b])]
 groupPairs = map (g . unzip) . groupBy eq
