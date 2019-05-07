@@ -32,14 +32,14 @@ mkGraph ws = graphFromEdges $ map lab $ getEdges ws
   where lab (x,xs) = ((),x,xs)
 
 hamiltonian :: Graph -> Maybe [Vertex]
-hamiltonian gr 
-    | all (`elem` edges gr) (pairs vs) = Just vs
+hamiltonian dag 
+    | all (`elem` edges dag) (pairs vs) = Just vs
     | otherwise = Nothing
-    where vs = topSort gr
+    where vs = topSort dag
 
 alphabet :: [String] -> Maybe String
-alphabet ws = fmap (map f) (hamiltonian gr)
-  where (gr, nodeFromVertex, vertexFromKey) = mkGraph ws
+alphabet ws = fmap (map f) (hamiltonian dag)
+  where (dag, nodeFromVertex, vertexFromKey) = mkGraph ws
         f = snd3 . nodeFromVertex where snd3 (_,x,_) = x
 
 byLines f = interact $ unlines . f . lines
