@@ -11,20 +11,22 @@ rotate n xs = take xs (drop n (cycle xs))
 decompose :: (Int,Int) -> Int -> Int -> Maybe [Int]
 decompose (a,b) n x
   | y > n*b = Nothing
-  | otherwise = Just (replicate (n-i-1) a ++ d:replicate i b)
+  | otherwise = Just (replicate (n-i-1) a ++ v:replicate i b)
   where above m = head . dropWhile (<m) . iterate (+256)
         y = above (n*a) x
-        (i,d) = g 0
-          where g i | d >= a && b >= d = (i,d)
+        (i,v) = g 0
+          where g i | a <= v && v <= b = (i,v)
                     | otherwise = g (i+1)
-                    where d = y - ((n-i-1)*a + i*b)
+                    where v = y - a*(n-i-1) - b*i
 
-update a f i = a // [(i, f (a!i))]
+hN = 16
 
 hash :: String -> UArray Int Int8
-hash = foldl f (listArray (0,15) (replicate 16 0)) . zip [0..]
-  where f a (i,x) = update a h (mod i 16)
-          where h u = u + fromIntegral (ord x)
+hash = foldl f zeroes . zip [0..]
+  where zeroes = listArray (0,hN-1) (replicate hN 0)
+        f a (i,x) = update (mod i hN)
+          where update i = a // [(i, h (a!i))]
+                h u = u + fromIntegral (ord x)
 
 solve :: (String,String) -> String
 solve (xs,ys) = map chr $ concat $ transpose $ head $ catMaybes $ map go [0..]
@@ -33,13 +35,13 @@ solve (xs,ys) = map chr $ concat $ transpose $ head $ catMaybes $ map go [0..]
         [x',a'] = map (rotate m) [x,a]
         t = zipWith (-) x' a'
         l = length as
-        m = mod l 16
+        m = mod l hN
         go i = sequence $ map (uncurry $ decompose (48,122)) (zip ns ds)
           where
-            (n,k) = divMod i 16
-            r = mod (16-l-k+m) 16
+            (n,k) = divMod i hN
+            r = mod (hN-l-k+m) hN
             ds = zipWith (-) t (rotate r z)
-            ns = replicate k (n+1) ++ replicate (16-k) n
+            ns = replicate k (n+1) ++ replicate (hN-k) n
 
 byLines f = interact $ unlines . f . lines
 
