@@ -9,9 +9,9 @@ import Data.Maybe
 pairs xs = zip xs (tail xs)
 
 groupPairs :: Eq a => [(a,b)] -> [(a,[b])]
-groupPairs = map (g . unzip) . groupBy eq
+groupPairs = map (g . unzip) . groupBy fstEQ
   where g (xs,ys) = (head xs, ys)
-        eq a b = fst a == fst b
+        fstEQ a b = fst a == fst b
 
 groupWords ws = unzip $ groupPairs $ map g $ filter (not.null) ws
   where g (x:xs) = (x,xs)
