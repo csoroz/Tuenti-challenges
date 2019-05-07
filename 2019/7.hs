@@ -9,16 +9,16 @@ import Debug.Trace
 rotate n xs = take xs (drop n (cycle xs))
         where take = zipWith (flip const)
 
-decompose :: Int -> Int -> Maybe [Int]
-decompose n x
-  | y > n*122 = Nothing
-  | otherwise = Just (replicate (n-i-1) 48 ++ d:replicate i 122)
+decompose :: (Int,Int) -> Int -> Int -> Maybe [Int]
+decompose (a,b) n x
+  | y > n*b = Nothing
+  | otherwise = Just (replicate (n-i-1) a ++ d:replicate i b)
   where above m = head . dropWhile (<m) . iterate (+256)
-        y = above (n*48) x
+        y = above (n*a) x
         (i,d) = g 0
-          where g i | d >= 48 && 122 >= d = (i,d)
+          where g i | d >= a && b >= d = (i,d)
                     | otherwise = g (i+1)
-                    where d = y - ((n-i-1)*48 + i*122)
+                    where d = y - ((n-i-1)*a + i*b)
 
 update a f i = a // [(i, f (a!i))]
 
@@ -35,7 +35,7 @@ solve (xs,ys) = map chr $ concat $ transpose $ head $ catMaybes $ map go [0..]
         t = zipWith (-) x' a'
         l = length as
         m = mod l 16
-        go i = sequence $ map (uncurry decompose) (zip ns ds)
+        go i = sequence $ map (uncurry $ decompose (48,122)) (zip ns ds)
           where
             (n,k) = divMod i 16
             r = mod (16-l-k+m) 16
