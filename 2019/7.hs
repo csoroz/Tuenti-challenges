@@ -17,7 +17,7 @@ decompose (a,b) n x
         (i,v) = g 0
           where g i | a <= v && v <= b = (i,v)
                     | otherwise = g (i+1)
-                    where v = y - a*(n-i-1) - b*i
+                    where v = y - (n-i-1)*a - i*b
 
 hN = 16
 
