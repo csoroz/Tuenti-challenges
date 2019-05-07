@@ -4,7 +4,6 @@ import Data.Int
 import Data.List
 import Data.List.Split
 import Data.Maybe
-import Debug.Trace
 
 rotate n xs = take xs (drop n (cycle xs))
         where take = zipWith (flip const)
