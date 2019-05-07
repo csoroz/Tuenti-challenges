@@ -15,15 +15,16 @@ typewriter = UA.listArray ((0,0),(3,9)) $ concat
 keys :: Map Char (Int,Int)
 keys = Map.fromList $ map swap (UA.assocs typewriter)
 
+bound (x,y) = (mod x 4, mod y 10)
+
 infixl 6 <->, <+>
 (a,b) <-> (x,y) = (a - x, b - y)
-(a,b) <+> (x,y) = (add 4 a x, add 10 b y)
-    where add m a b = (a + b) `mod` m
+(a,b) <+> (x,y) = (a + x, b + y)
 
 decrypt (a,s) = map g s
   where
     g x | isSpace x = x
-        | otherwise = typewriter UA.! (d <+> keys ! x)
+        | otherwise = typewriter UA.! bound (d <+> keys ! x)
     x = keys ! a
     z = keys ! (last s)
     d = x <-> z
