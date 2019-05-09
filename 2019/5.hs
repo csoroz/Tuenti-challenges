@@ -17,17 +17,17 @@ keys = Map.fromList $ map swap (UA.assocs typewriter)
 
 bound (x,y) = (mod x 4, mod y 10)
 
-infixl 6 <->, <+>
-(a,b) <-> (x,y) = (a - x, b - y)
-(a,b) <+> (x,y) = (a + x, b + y)
+infixl 6 !-!, !+!
+(a,b) !-! (x,y) = (a - x, b - y)
+(a,b) !+! (x,y) = (a + x, b + y)
 
 decrypt (a,s) = map g s
   where
     g x | isSpace x = x
-        | otherwise = typewriter UA.! bound (d <+> keys ! x)
+        | otherwise = typewriter UA.! bound (d !+! keys ! x)
     x = keys ! a
     z = keys ! (last s)
-    d = x <-> z
+    d = x !-! z
 
 byLines f = interact $ unlines . f . lines
 
