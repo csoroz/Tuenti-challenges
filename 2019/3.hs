@@ -1,9 +1,9 @@
 import Data.List
 
-data F = L | R | T | B deriving (Read,Show)
-type P = (Int,Int)
+data Folds = L | R | T | B deriving (Read,Show)
+type Punch = (Int,Int)
 
-solve :: (Int,Int,[F],[P]) -> [P]
+solve :: (Int,Int,[Folds],[Punch]) -> [Punch]
 solve (w,h,fs,ps) = sort $ punches $ foldl step (0,w,0,h,ps) fs
   where
     punches (l,_,t,_,ps) = map (delta (l,t)) ps
