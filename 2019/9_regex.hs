@@ -1,4 +1,4 @@
--- NOTE: For UTF-8 stdin on Windows cmd: chcp 65001
+-- [NOTE] For UTF-8 stdin on Windows cmd: chcp 65001
 {-# LANGUAGE LambdaCase #-}
 import Data.Char
 import Data.List
@@ -20,17 +20,18 @@ oneOf :: String -> Rexp Char
 oneOf = foldr (:|) Phi . map Single
 
 kanjiRexp :: (String,String,String) -> Rexp Char
-kanjiRexp (v,w,y) = o (u :. g t)
-                 :. o (a :. g m)
-                 :. o (a :. g c)
-                 :. o (a :. g x)
+kanjiRexp (v,w,y) = f u t
+                 :. f a m
+                 :. f a c
+                 :. f a x
                  :. o u
                  where
                     [x,c,m,t] = tens4
                     u = oneOf (v ++ w)
                     a = o (oneOf w)
                     o = (:| Nil)
-                    g a = if elem a y then Single a else Phi
+                    f x y = o (x :. g y)
+                    g x = if elem x y then Single x else Phi
 
 kanji1 :: Char -> Int
 kanji1 = \case
