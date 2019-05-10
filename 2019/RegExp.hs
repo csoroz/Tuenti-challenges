@@ -20,8 +20,8 @@ enum re = case re of
     Phi      -> []     -- empty language
     Nil      -> [[]]   -- language containing null string only
     Single x -> [[x]]  -- convert x to string
-    x :| y   -> enum x +++ enum y
-    x :. y   -> enum x *** enum y
+    x :| y   -> enum x +++ enum y -- merge alternatives
+    x :. y   -> enum x *** enum y -- concatenate
     Star x   -> closure (enum x)
 
 -- The following functions —merge(+++), prod(***), and closure— are as given before.
