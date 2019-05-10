@@ -1,4 +1,4 @@
-Tuenti challenges
+Tuenti Challenges
 =================
 
-[Tuenti Challenges](https://contest.tuenti.net)
+[Tuenti contest](https://contest.tuenti.net)
