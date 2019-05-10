@@ -11,11 +11,11 @@ data Rexp z = Phi      -- empty language
     | Rexp z :. Rexp z -- concatenation
     | Star (Rexp z)    -- Kleene closure
 
-type S z = [z]
+type Str z = [z] -- string of symbols
 
 -- The result of function enum is an ordered list of strings of a regular expression.
 
-enum :: Ord z => Rexp z -> [S z]
+enum :: Ord z => Rexp z -> [Str z]
 enum re = case re of
     Phi      -> []     -- empty language
     Nil      -> [[]]   -- language containing null string only
@@ -26,7 +26,7 @@ enum re = case re of
 
 -- The following functions —merge(+++), prod(***), and closure— are as given before.
 
-(+++), (***) :: Ord z => [S z] -> [S z] -> [S z]
+(+++), (***) :: Ord z => [Str z] -> [Str z] -> [Str z]
 
 [] +++ ys = ys
 xs +++ [] = xs
@@ -39,7 +39,7 @@ xs@(x:xt) +++ ys@(y:yt) = case compare (metric x) (metric y) of
 _  *** [] = []
 xs@(x:xt) *** ys@(y:yt) = (x++y) : (map (x++) yt +++ (xt *** ys))
 
-closure :: Ord z => [S z] -> [S z]
+closure :: Ord z => [Str z] -> [Str z]
 closure []      = [[]]
 closure ([]:xt) = closure xt
 closure xs      = [] : (xs *** closure xs)
