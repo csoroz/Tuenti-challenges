@@ -20,18 +20,18 @@ oneOf :: String -> Rexp Char
 oneOf = foldr (:|) Phi . map Single
 
 kanjiRexp :: (String,String,String) -> Rexp Char
-kanjiRexp (v,w,y) = f u t
-                 :. f a m
-                 :. f a c
-                 :. f a x
+kanjiRexp (v,w,y) = g u t
+                 :. g a m
+                 :. g a c
+                 :. g a x
                  :. o u
                  where
                     [x,c,m,t] = tens4
                     u = oneOf (v ++ w)
                     a = o (oneOf w)
+                    g a b | elem b y = o (a :. Single b)
+                    g _ _ = Nil
                     o = (:| Nil)
-                    f x y = o (x :. g y)
-                    g x = if elem x y then Single x else Phi
 
 kanji1 :: Char -> Int
 kanji1 = \case
