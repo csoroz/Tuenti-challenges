@@ -13,6 +13,8 @@ data Rexp z = Phi      -- empty language
 
 type Str z = [z] -- string of symbols
 
+metric x = (length x, x)
+
 -- The result of function enum is an ordered list of strings of a regular expression.
 
 enum :: Ord z => Rexp z -> [Str z]
@@ -43,5 +45,3 @@ closure :: Ord z => [Str z] -> [Str z]
 closure []      = [[]]
 closure ([]:xt) = closure xt
 closure xs      = [] : (xs *** closure xs)
-
-metric x = (length x, x)
