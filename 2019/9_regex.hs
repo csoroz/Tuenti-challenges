@@ -59,14 +59,14 @@ kanjiN = \case
 
 data Op = Plus | Minus | Times
 
-eval Plus  = (+)
-eval Minus = (-)
-eval Times = (*)
-
 instance Show Op where
     show Plus  = "+"
     show Minus = "-"
     show Times = "*"
+
+eval Plus  = (+)
+eval Minus = (-)
+eval Times = (*)
 
 check (o,a,b,c) = (eval o) a b == c
 
