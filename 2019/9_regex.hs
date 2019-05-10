@@ -11,13 +11,17 @@ import RegExp
 tens3 = "十百千"
 tens4 = "十百千万"
 
+alt, str :: [Rexp z] -> Rexp z
+alt = foldr (:|) Phi
+str = foldr (:.) Nil
+
+oneOf :: [z] -> Rexp z
+oneOf = alt . map Single
+
 classify :: String -> (String,String,String)
 classify s = (v,w,y)
   where (y,z) = partition (`elem` tens4) s
         (v,w) = partition (== '一') (nub z)
-
-oneOf :: String -> Rexp Char
-oneOf = foldr (:|) Phi . map Single
 
 kanjiRexp :: (String,String,String) -> Rexp Char
 kanjiRexp (v,w,y) = g u t
@@ -29,7 +33,7 @@ kanjiRexp (v,w,y) = g u t
                     [x,c,m,t] = tens4
                     u = oneOf (v ++ w)
                     a = o (oneOf w)
-                    g a b | elem b y = o (a :. Single b)
+                    g a b | elem b y = a :. Single b
                     g _ _ = Nil
                     o = (:| Nil)
 
