@@ -1,4 +1,4 @@
-module RegExp where
+module RegExp (Rexp(..),enum) where
 -- https://www.cs.utexas.edu/users/misra/Notes.dir/RegExp.pdf
 -- Define concatenation and alternation to be associative.
 -- concatenation has higher binding power than alternation.
