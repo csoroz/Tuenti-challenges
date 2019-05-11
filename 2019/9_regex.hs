@@ -8,9 +8,6 @@ import RegExp
 
 -- Kanji numerals (一二三四五六七八九十百千万)
 
-tens3 = "十百千"
-tens4 = "十百千万"
-
 alt, str :: [Rexp z] -> Rexp z
 alt = foldr (:|) Phi
 str = foldr (:.) Nil
@@ -18,27 +15,30 @@ str = foldr (:.) Nil
 oneOf :: [z] -> Rexp z
 oneOf = alt . map Single
 
-classify :: String -> (String,String,String)
-classify s = (v,w,y)
-  where (y,z) = partition (`elem` tens4) s
-        (v,w) = partition (== '一') (nub z)
+splitBy p xs = (takeWhile p xs, dropWhile p xs)
 
-kanjiRexp :: (String,String,String) -> Rexp Char
-kanjiRexp (v,w,y) = g u t
-                 :. g a m
-                 :. g a c
-                 :. g a x
+classify :: [Int] -> ([Int],[Int],[Int])
+classify s = (nub v, nub w, reverse y)
+  where (v,z) = splitBy (==1) (sort s)
+        (w,y) = splitBy (<10) z
+
+kanjiRexp :: ([Int],[Int],[Int]) -> Rexp Int
+kanjiRexp (v,w,y) = g u 10000
+                 :. g a 1000
+                 :. g a 100
+                 :. g a 10
                  :. o u
                  where
-                    [x,c,m,t] = tens4
                     u = oneOf (v ++ w)
                     a = o (oneOf w)
                     g a b | elem b y = a :. Single b
                     g _ _ = Nil
                     o = (:| Nil)
 
-kanji1 :: Char -> Int
-kanji1 = \case
+kanjis = enum . kanjiRexp . classify
+
+kanji :: Char -> Int
+kanji = \case
     '一' -> 1
     '二' -> 2
     '三' -> 3
@@ -53,13 +53,13 @@ kanji1 = \case
     '千' -> 1000
     '万' -> 10000
 
-kanjiN :: String -> Int
-kanjiN = \case
+kanjiVal :: [Int] -> Int
+kanjiVal = \case
     [ ] -> 0
-    [u] -> kanji1 u
-    (x:xs)   | elem x tens3 -> g '一' x xs
-    (u:x:xs) | elem x tens4 -> g u x xs
-    where g a b xs = kanji1 a * kanji1 b + kanjiN xs
+    [x] -> x
+    (x:xs)   | x > 9 -> g 1 x xs
+    (u:x:xs) | x > 9 -> g u x xs
+    where g u x xs = u*x + kanjiVal xs
 
 data Op = Plus | Minus | Times
 
@@ -83,12 +83,11 @@ solve (as,bs,cs) = fromJust $ find check $ do
                     return (o,a,b,c)
   where
     matches x = let t = sort x in filter ((t==).sort) (kanjis x)
-    kanjis = enum . kanjiRexp . classify
-    combs = map kanjiN . matches
+    combs = map kanjiVal . matches . map kanji
 
 byLines f = interact $ unlines . f . lines
 
-showCase (i,(op,a,b,c)) = concat ["Case #",show i,": ", unwords [show a, show op, show b,"=",show c]]
+showCase (i,(o,a,b,c)) = concat ["Case #",show i,": ", unwords [show a, show o, show b,"=",show c]]
 
 parse s = (a,b,c)
   where
