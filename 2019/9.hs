@@ -1,9 +1,12 @@
 -- [NOTE] For UTF-8 stdin on Windows cmd: chcp 65001
 {-# LANGUAGE LambdaCase,NoMonomorphismRestriction #-}
+import qualified Math.Combinatorics.Multiset as M -- cabal install multiset-comb
+import qualified Math.Combinat.Permutations as C -- cabal install combinat
 import Data.List.Split (splitOn)
 import Data.List
 import Data.Char
 import Data.Maybe
+import Control.Monad
 
 data Op = Plus | Minus | Times
 
@@ -52,11 +55,15 @@ splits xs = map (flip splitAt xs) [0..n]
 
 selects xs = [(z,ys++zs) | (ys,z:zs) <- splits xs]
 
-unique = map head . group . sort
-
 between a z x = a ++ x ++ z
 
-comb i ys ws = map (concat . flip (zipWith (++)) yss) (permutations wss)
+unique = map head . group . sort
+
+-- perms = M.permutations . M.fromList
+-- perms = C.permuteMultiset
+perms = unique . permutations
+
+comb i ys ws = map (concat . flip (zipWith (++)) yss) (perms wss)
   where n = length ys; yss = pad ys; wss = pad ws
         pad xs = take (n+i) (map return xs ++ repeat [])
 
@@ -91,5 +98,6 @@ parse s = (a,b,c)
     [x,c] = splitOn "=" $ filter (not.isSpace) s
     [a,b] = splitOn "OPERATOR" x
 
-main = byLines $ map showCase . zip [1..] . map (solve . parse) . g
-  where g (l:ls) = take (read l) ls
+-- main = byLines $ map showCase . zip [1..] . map solve . rep 10 . map parse . g
+main = byLines $ map showCase . zip [1..] . map solve . map parse . g
+  where g (l:ls) = take (read l) ls; rep n = concat . replicate n
