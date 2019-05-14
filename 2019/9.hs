@@ -56,19 +56,19 @@ unique = map head . group . sort
 
 between a z x = a ++ x ++ z
 
-comb i xs ys = map (concat . flip (zipWith (++)) yss) (permutations xss)
-  where n = length ys; yss = pad ys; xss = pad xs
+comb i ys ws = map (concat . flip (zipWith (++)) yss) (permutations wss)
+  where n = length ys; yss = pad ys; wss = pad ws
         pad xs = take (n+i) (map return xs ++ repeat [])
 
 combine :: ([Int],[Int],[Int]) -> [[Int]]
 combine = unique . g
   where
-    g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ws ys)
-    g (10000:ys,ws,[1]) = map ([1,10000]++) (comb 1 ws ys) ++ map (++[1]) (f 0 ws ys)
-    g (10000:ys,ws,[]) = f 1 ws ys
-    g (ys,ws,[1]) = map (++[1]) (comb 0 ws ys)
-    g (ys,ws,[]) = comb 1 ws ys
-    f i ws ys = concat [map ([x,10000]++) (comb i xs ys) | (x,xs) <- selects ws]
+    g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ys ws)
+    g (10000:ys,ws,[1]) = map ([1,10000]++) (comb 1 ys ws) ++ map (++[1]) (f 0 ys ws)
+    g (10000:ys,ws,[]) = f 1 ys ws
+    g (ys,ws,[1]) = map (++[1]) (comb 0 ys ws)
+    g (ys,ws,[]) = comb 1 ys ws
+    f i ys ws = concat [map ([x,10000]++) (comb i ys xs) | (x,xs) <- selects ws]
 
 combs = map kanjiVal . combine . classify . map kanji
 
