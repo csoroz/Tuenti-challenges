@@ -72,7 +72,7 @@ comb i ys ws = map (concat . flip (zipWith (++)) yss) (perms wss)
 combine :: ([Int],[Int],[Int]) -> [[Int]]
 combine = unique . g
   where
-    -- tr f a = traceShow (length u,length a) u where u = f a
+    -- tr f a = let u = f a in traceShow (length u,length a) u
     g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ys ws)
     g (10000:ys,ws,[1]) = map ([1,10000]++) (comb 1 ys ws) ++ map (++[1]) (f 0 ys ws)
     g (10000:ys,ws,[]) = f 1 ys ws
