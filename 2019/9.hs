@@ -43,7 +43,7 @@ kanjiVal = \case
 splitBy p xs = (takeWhile p xs, dropWhile p xs)
 
 classify :: [Int] -> ([Int],[Int],[Int])
-classify s = (v, w, reverse y)
+classify s = (reverse y, w, v)
   where (v,z) = splitBy (==1) (sort s)
         (w,y) = splitBy (<10) z
 
@@ -63,12 +63,12 @@ comb i xs ys = map (concat . flip (zipWith (++)) yss) (permutations xss)
 combine :: ([Int],[Int],[Int]) -> [[Int]]
 combine = unique . g
   where
-    g ([1,1],ws,10000:ys) = map (between [1,10000] [1]) (comb 0 ws ys)
-    g ([1],ws,10000:ys) = 
+    g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ws ys)
+    g (10000:ys,ws,[1]) = 
         map ([1,10000]++) (comb 1 ws ys) ++ map (++[1]) (f 0 ws ys)
-    g ([1],ws,ys) = map (++[1]) (comb 0 ws ys)
-    g ([],ws,10000:ys) = f 1 ws ys
-    g ([],ws,ys) = comb 1 ws ys
+    g (ys,ws,[1]) = map (++[1]) (comb 0 ws ys)
+    g (10000:ys,ws,[]) = f 1 ws ys
+    g (ys,ws,[]) = comb 1 ws ys
     f i ws ys = concat [map ([x,10000]++) (comb i xs ys) | (x,xs) <- selects ws]
 
 combs = map kanjiVal . combine . classify . map kanji
