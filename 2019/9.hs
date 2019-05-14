@@ -7,7 +7,6 @@ import Data.List.Split (splitOn)
 import Data.List
 import Data.Char
 import Data.Maybe
-import Debug.Trace
 
 -- Kanji numerals (一二三四五六七八九十百千万)
 ----------------- 1 2 3 4 5 6 7 8 9 X C M T
@@ -60,6 +59,7 @@ perms = unique . permutations
 unique = map head . group . sort
 enclose a z x = a ++ x ++ z
 
+selects :: [a] -> [(a,[a])]
 selects xs = init $ zipWith g (inits xs) (tails xs)
                     where g xs (y:ys) = (y,xs++ys)
 
@@ -79,7 +79,6 @@ combine = \case
                            | (x,xs) <- unique (selects ws)]
 
 combs = map kanjiVal . combine . classify . map kanji
-
 check (o,a,b,c) = (eval o) a b == c
 
 solve :: (String,String,String) -> (Op,Int,Int,Int)
@@ -93,13 +92,14 @@ solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs]
 
 byLines f = interact $ unlines . f . lines
 
-showCase (i,(o,a,b,c)) = concat ["Case #",show i,": ", unwords [show a, show o, show b,"=",show c]]
+showCase (i,(o,a,b,c)) = concat ["Case #",show i,": ", unwords [x,u,y,"=",z]]
+                                where [x,y,z] = map show [a,b,c]; u = show o
 
 parse s = (a,b,c)
   where
     [x,c] = splitOn "=" $ filter (not.isSpace) s
     [a,b] = splitOn "OPERATOR" x
 
--- main = byLines $ map showCase . zip [1..] . map solve . rep 9 . map parse . g
+-- main = byLines $ map showCase . zip [1..] . map solve . rep 8 . map parse . g
 main = byLines $ map showCase . zip [1..] . map solve . map parse . g
   where g (l:ls) = take (read l) ls; rep n = concat . replicate n
