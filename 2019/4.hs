@@ -2,10 +2,10 @@ import Data.Char
 import Data.List
 import Data.Ratio
 
+lcms = foldl1' lcm
+
 compress = map count . group . sort
   where count xs = (head xs, genericLength xs)
-
-lcms = foldl1' lcm
 
 solve :: [Integer] -> Rational
 solve as = n % m
