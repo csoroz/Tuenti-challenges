@@ -1,7 +1,8 @@
 -- [NOTE] For UTF-8 stdin on Windows cmd: chcp 65001
 {-# LANGUAGE LambdaCase,NoMonomorphismRestriction #-}
-import qualified Math.Combinatorics.Multiset as M -- cabal install multiset-comb
-import qualified Math.Combinat.Permutations as C -- cabal install combinat
+--import qualified Math.Combinatorics.Multiset as M -- cabal install multiset-comb
+--import qualified Math.Combinat.Permutations as C -- cabal install combinat
+--import qualified Data.NonEmpty as N -- cabal install non-empty
 import Data.List.Split (splitOn)
 import Data.List
 import Data.Char
@@ -50,10 +51,8 @@ classify s = (reverse y, w, v)
   where (v,z) = splitBy (==1) (sort s)
         (w,y) = splitBy (<10) z
 
-splits xs = map (flip splitAt xs) [0..n]
-  where n = length xs
-
-selects xs = [(z,ys++zs) | (ys,z:zs) <- splits xs]
+selects xs = init $ zipWith g (inits xs) (tails xs)
+                    where g xs (y:ys) = (y,xs++ys)
 
 between a z x = a ++ x ++ z
 
