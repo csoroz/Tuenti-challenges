@@ -10,7 +10,7 @@ import Data.Maybe
 import Debug.Trace
 
 -- Kanji numerals (一二三四五六七八九十百千万)
--- -------------- 1 2 3 4 5 6 7 8 9 X C M T
+----------------- 1 2 3 4 5 6 7 8 9 X C M T
 
 data Op = Plus | Minus | Times
 
@@ -66,11 +66,11 @@ unique = map head . group . sort
 perms = unique . permutations
 
 comb i ys ws = map (concat . flip (zipWith (++)) yss) (perms wss)
-  where n = length ys; yss = pad ys; wss = pad ws
+  where n = length ys; [yss,wss] = map pad [ys,ws]
         pad xs = take (n+i) (map return xs ++ repeat [])
 
 combine :: ([Int],[Int],[Int]) -> [[Int]]
-combine = unique . g
+combine = g
   where
     -- tr f a = let u = f a in traceShow (length u,length a) u
     g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ys ws)
@@ -78,13 +78,11 @@ combine = unique . g
     g (10000:ys,ws,[]) = f 1 ys ws
     g (ys,ws,[1]) = map (++[1]) (comb 0 ys ws)
     g (ys,ws,[]) = comb 1 ys ws
-    f i ys ws = concat [map ([x,10000]++) (comb i ys xs) | (x,xs) <- selects ws]
+    f i ys ws = concat [map ([x,10000]++) (comb i ys xs) | (x,xs) <- unique $ selects ws]
 
 combs = map kanjiVal . combine . classify . map kanji
 
 check (o,a,b,c) = (eval o) a b == c
-
--- test = ("五百万五八千","六十千一百五万七六","四八四十百千万四")
 
 solve :: (String,String,String) -> (Op,Int,Int,Int)
 solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs] 
@@ -94,7 +92,6 @@ solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs]
                         b <- bs
                         c <- cs
                         return (o,a,b,c)
-
 
 byLines f = interact $ unlines . f . lines
 
