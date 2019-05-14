@@ -1,8 +1,8 @@
 -- [NOTE] For UTF-8 stdin on Windows cmd: chcp 65001
 {-# LANGUAGE LambdaCase,NoMonomorphismRestriction #-}
---import qualified Math.Combinatorics.Multiset as M -- cabal install multiset-comb
---import qualified Math.Combinat.Permutations as C -- cabal install combinat
---import qualified Data.NonEmpty as N -- cabal install non-empty
+-- import qualified Math.Combinatorics.Multiset as M -- cabal install multiset-comb
+-- import qualified Math.Combinat.Permutations as C -- cabal install combinat
+-- import qualified Data.NonEmpty as N -- cabal install non-empty
 import Data.List.Split (splitOn)
 import Data.List
 import Data.Char
@@ -54,31 +54,29 @@ classify s = (reverse y, w, v)
   where (v,z) = splitBy (==1) (sort s)
         (w,y) = splitBy (<10) z
 
-selects xs = init $ zipWith g (inits xs) (tails xs)
-                    where g xs (y:ys) = (y,xs++ys)
-
-between a z x = a ++ x ++ z
-
-unique = map head . group . sort
-
 -- perms = M.permutations . M.fromList
 -- perms = C.permuteMultiset
 perms = unique . permutations
+unique = map head . group . sort
+enclose a z x = a ++ x ++ z
+
+selects xs = init $ zipWith g (inits xs) (tails xs)
+                    where g xs (y:ys) = (y,xs++ys)
 
 comb i ys ws = map (concat . flip (zipWith (++)) yss) (perms wss)
   where n = length ys; [yss,wss] = map pad [ys,ws]
         pad xs = take (n+i) (map return xs ++ repeat [])
 
 combine :: ([Int],[Int],[Int]) -> [[Int]]
-combine = g
-  where
-    -- tr f a = let u = f a in traceShow (length u,length a) u
-    g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ys ws)
-    g (10000:ys,ws,[1]) = map ([1,10000]++) (comb 1 ys ws) ++ map (++[1]) (f 0 ys ws)
-    g (10000:ys,ws,[]) = f 1 ys ws
-    g (ys,ws,[1]) = map (++[1]) (comb 0 ys ws)
-    g (ys,ws,[]) = comb 1 ys ws
-    f i ys ws = concat [map ([x,10000]++) (comb i ys xs) | (x,xs) <- unique $ selects ws]
+combine = \case
+  (10000:ys,ws,[1,1]) -> map (enclose [1,10000] [1]) (comb 0 ys ws)
+  (10000:ys,ws,[1])   -> map ([1,10000]++) (comb 1 ys ws) 
+                      ++ map (++[1]) (f 0 ys ws)
+  (10000:ys,ws,[])    -> f 1 ys ws
+  (ys,ws,[1])         -> map (++[1]) (comb 0 ys ws)
+  (ys,ws,[])          -> comb 1 ys ws
+  where f i ys ws = concat [map ([x,10000]++) (comb i ys xs) 
+                           | (x,xs) <- unique (selects ws)]
 
 combs = map kanjiVal . combine . classify . map kanji
 
@@ -102,6 +100,6 @@ parse s = (a,b,c)
     [x,c] = splitOn "=" $ filter (not.isSpace) s
     [a,b] = splitOn "OPERATOR" x
 
--- main = byLines $ map showCase . zip [1..] . map solve . rep 10 . map parse . g
+-- main = byLines $ map showCase . zip [1..] . map solve . rep 9 . map parse . g
 main = byLines $ map showCase . zip [1..] . map solve . map parse . g
   where g (l:ls) = take (read l) ls; rep n = concat . replicate n
