@@ -7,7 +7,10 @@ import Data.List.Split (splitOn)
 import Data.List
 import Data.Char
 import Data.Maybe
-import Control.Monad
+import Debug.Trace
+
+-- Kanji numerals (一二三四五六七八九十百千万)
+-- -------------- 1 2 3 4 5 6 7 8 9 X C M T
 
 data Op = Plus | Minus | Times
 
@@ -69,6 +72,7 @@ comb i ys ws = map (concat . flip (zipWith (++)) yss) (perms wss)
 combine :: ([Int],[Int],[Int]) -> [[Int]]
 combine = unique . g
   where
+    -- tr f a = traceShow (length u,length a) u where u = f a
     g (10000:ys,ws,[1,1]) = map (between [1,10000] [1]) (comb 0 ys ws)
     g (10000:ys,ws,[1]) = map ([1,10000]++) (comb 1 ys ws) ++ map (++[1]) (f 0 ys ws)
     g (10000:ys,ws,[]) = f 1 ys ws
@@ -80,13 +84,17 @@ combs = map kanjiVal . combine . classify . map kanji
 
 check (o,a,b,c) = (eval o) a b == c
 
+-- test = ("五百万五八千","六十千一百五万七六","四八四十百千万四")
+
 solve :: (String,String,String) -> (Op,Int,Int,Int)
-solve (as,bs,cs) = fromJust $ find check $ do
-                    o <- [Plus,Minus,Times]
-                    a <- combs as
-                    b <- combs bs
-                    c <- combs cs
-                    return (o,a,b,c)
+solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs] 
+                    in fromJust $ find check $ do
+                        o <- [Plus,Minus,Times]
+                        a <- as
+                        b <- bs
+                        c <- cs
+                        return (o,a,b,c)
+
 
 byLines f = interact $ unlines . f . lines
 
