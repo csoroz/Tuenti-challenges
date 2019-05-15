@@ -79,6 +79,9 @@ combine = \case
   where f i ys ws = concat [map ([x,10000]++) (comb i ys xs) 
                            | (x,xs) <- unique (selects ws)]
 
+combs = map kanjiVal . combine . classify . map kanji
+check (o,a,b,c) = (eval o) a b == c
+
 solve :: (String,String,String) -> (Op,Int,Int,Int)
 solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs] 
                     in fromJust $ find check $ do
@@ -87,9 +90,6 @@ solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs]
                         b <- bs
                         c <- cs
                         return (o,a,b,c)
-  where
-    combs = map kanjiVal . combine . classify . map kanji
-    check (o,a,b,c) = (eval o) a b == c
 
 byLines f = interact $ unlines . f . lines
 
