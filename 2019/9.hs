@@ -1,12 +1,13 @@
--- [NOTE] For UTF-8 stdin on Windows cmd: chcp 65001
 {-# LANGUAGE LambdaCase,NoMonomorphismRestriction #-}
 -- import qualified Math.Combinatorics.Multiset as M -- cabal install multiset-comb
 -- import qualified Math.Combinat.Permutations as C -- cabal install combinat
 -- import qualified Data.NonEmpty as N -- cabal install non-empty
-import Data.List.Split (splitOn)
+import Data.List.Split (splitOn) -- cabal install split
 import Data.List
 import Data.Char
 import Data.Maybe
+
+-- [NOTE] For UTF-8 stdin on Windows cmd: chcp 65001
 
 -- Kanji numerals (一二三四五六七八九十百千万)
 ----------------- 1 2 3 4 5 6 7 8 9 X C M T
@@ -78,9 +79,6 @@ combine = \case
   where f i ys ws = concat [map ([x,10000]++) (comb i ys xs) 
                            | (x,xs) <- unique (selects ws)]
 
-combs = map kanjiVal . combine . classify . map kanji
-check (o,a,b,c) = (eval o) a b == c
-
 solve :: (String,String,String) -> (Op,Int,Int,Int)
 solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs] 
                     in fromJust $ find check $ do
@@ -89,6 +87,9 @@ solve (xs,ys,zs) = let [as,bs,cs] = map combs [xs,ys,zs]
                         b <- bs
                         c <- cs
                         return (o,a,b,c)
+  where
+    combs = map kanjiVal . combine . classify . map kanji
+    check (o,a,b,c) = (eval o) a b == c
 
 byLines f = interact $ unlines . f . lines
 
