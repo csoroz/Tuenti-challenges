@@ -5,8 +5,8 @@ import Data.List
 import Data.List.Split
 import Data.Maybe
 
-rotate n xs = take xs (drop n (cycle xs))
-        where take = zipWith (flip const)
+rotate n xs = take (drop n (cycle xs)) xs
+        where take = zipWith const
 
 decompose :: (Int,Int) -> Int -> Int -> Maybe [Int]
 decompose (a,b) n x
