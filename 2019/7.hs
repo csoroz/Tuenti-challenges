@@ -28,7 +28,7 @@ hash = foldl f zeroes . zip [0..]
                 h u = u + fromIntegral (ord x)
 
 solve :: (String,String) -> String
-solve (xs,ys) = columns $ head $ catMaybes $ map go [0..]
+solve (xs,ys) = columns $ head $ catMaybes $ map crack [0..]
   where columns = map chr . concat . transpose
         [as,zs] = [a++"---","---"++z] where [a,z] = splitOn "------" ys
         [x,a,z] = map (map fromIntegral . elems . hash) [xs,as,zs]
@@ -36,7 +36,7 @@ solve (xs,ys) = columns $ head $ catMaybes $ map go [0..]
         t = zipWith (-) x' a'
         l = length as
         m = mod l hN
-        go i = sequence $ map (decompose (48,122)) (zip ns ds)
+        crack i = sequence $ map (decompose (48,122)) (zip ns ds)
           where
             (n,k) = divMod i hN
             r = mod (hN-l-k+m) hN
