@@ -7,8 +7,8 @@ import Data.Maybe
 
 rotate n xs = zipWith const (drop n (cycle xs)) xs
 
-decompose :: (Int,Int) -> Int -> Int -> Maybe [Int]
-decompose (a,b) n x
+decompose :: (Int,Int) -> (Int,Int) -> Maybe [Int]
+decompose (a,b) (n,x)
   | y > n*b = Nothing
   | otherwise = Just (replicate (n-i-1) a ++ v:replicate i b)
   where above m = head . dropWhile (<m) . iterate (+256)
@@ -28,14 +28,15 @@ hash = foldl f zeroes . zip [0..]
                 h u = u + fromIntegral (ord x)
 
 solve :: (String,String) -> String
-solve (xs,ys) = map chr $ concat $ transpose $ head $ catMaybes $ map go [0..]
-  where [as,zs] = [a++"---","---"++z] where [a,z] = splitOn "------" ys
+solve (xs,ys) = columns $ head $ catMaybes $ map go [0..]
+  where columns = map chr . concat . transpose
+        [as,zs] = [a++"---","---"++z] where [a,z] = splitOn "------" ys
         [x,a,z] = map (map fromIntegral . elems . hash) [xs,as,zs]
         [x',a'] = map (rotate m) [x,a]
         t = zipWith (-) x' a'
         l = length as
         m = mod l hN
-        go i = sequence $ map (uncurry $ decompose (48,122)) (zip ns ds)
+        go i = sequence $ map (decompose (48,122)) (zip ns ds)
           where
             (n,k) = divMod i hN
             r = mod (hN-l-k+m) hN
