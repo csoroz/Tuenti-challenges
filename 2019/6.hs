@@ -28,7 +28,7 @@ getEdges = Map.assocs . Map.map Set.elems . g
       where es = Map.map Set.singleton $ Map.fromList $ pairs xs
             (xs,wss) = groupWords ws; z = last xs
 
-mkGraph ws = graphFromEdges $ map lab $ getEdges ws
+graph ws = graphFromEdges $ map lab $ getEdges ws
   where lab (x,xs) = ((),x,xs)
 
 hamiltonian :: Graph -> Maybe [Vertex]
@@ -39,7 +39,7 @@ hamiltonian dag
 
 alphabet :: [String] -> Maybe String
 alphabet ws = fmap (map f) (hamiltonian dag)
-  where (dag, nodeFromVertex, vertexFromKey) = mkGraph ws
+  where (dag, nodeFromVertex, vertexFromKey) = graph ws
         f = snd3 . nodeFromVertex where snd3 (_,x,_) = x
 
 byLines f = interact $ unlines . f . lines
