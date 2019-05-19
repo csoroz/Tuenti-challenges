@@ -6,11 +6,11 @@ import Data.Tuple
 import Data.Char
 
 typewriter :: UArray (Int,Int) Char
-typewriter = U.listArray ((0,0),(3,9)) $ concat
-                        ["1234567890"
-                        ,"QWERTYUIOP"
-                        ,"ASDFGHJKL;"
-                        ,"ZXCVBNM,.-"]
+typewriter = U.listArray ((0,0),(3,9))
+             $ concat ["1234567890"
+                      ,"QWERTYUIOP"
+                      ,"ASDFGHJKL;"
+                      ,"ZXCVBNM,.-"]
 
 keys :: Map Char (Int,Int)
 keys = Map.fromList $ map swap (U.assocs typewriter)
