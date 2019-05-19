@@ -1,19 +1,19 @@
 import Data.Map (Map,(!))
 import qualified Data.Map.Strict as Map
 import Data.Array.Unboxed (UArray)
-import qualified Data.Array.Unboxed as UA
+import qualified Data.Array.Unboxed as U
 import Data.Tuple
 import Data.Char
 
 typewriter :: UArray (Int,Int) Char
-typewriter = UA.listArray ((0,0),(3,9)) $ concat
+typewriter = U.listArray ((0,0),(3,9)) $ concat
                         ["1234567890"
                         ,"QWERTYUIOP"
                         ,"ASDFGHJKL;"
                         ,"ZXCVBNM,.-"]
 
 keys :: Map Char (Int,Int)
-keys = Map.fromList $ map swap (UA.assocs typewriter)
+keys = Map.fromList $ map swap (U.assocs typewriter)
 
 bound (x,y) = (mod x 4, mod y 10)
 
@@ -24,7 +24,7 @@ infixl 6 !-!, !+!
 decrypt (a,s) = map g s
   where
     g x | isSpace x = x
-        | otherwise = typewriter UA.! bound (d !+! keys ! x)
+        | otherwise = typewriter U.! bound (d !+! keys ! x)
     x = keys ! a
     z = keys ! (last s)
     d = x !-! z
