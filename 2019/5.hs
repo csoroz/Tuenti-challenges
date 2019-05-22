@@ -24,10 +24,8 @@ infixl 6 !-!, !+!
 decrypt (a,s) = map g s
   where
     g x | isSpace x = x
-        | otherwise = typewriter U.! bound (d !+! keys ! x)
-    x = keys ! a
-    z = keys ! (last s)
-    d = x !-! z
+        | otherwise = typewriter U.! bound (d !+! keys!x)
+    d = keys!a !-! keys!(last s)
 
 byLines f = interact $ unlines . f . lines
 
