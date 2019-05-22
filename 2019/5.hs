@@ -21,10 +21,10 @@ infixl 6 !-!, !+!
 (a,b) !-! (x,y) = (a - x, b - y)
 (a,b) !+! (x,y) = (a + x, b + y)
 
-decrypt (a,s) = map g s
+decrypt (a,s) = map f s
   where
-    g x | isSpace x = x
-        | otherwise = typewriter U.! bound (d !+! keys!x)
+    f x = if isSpace x then x else g x
+    g x = typewriter U.! bound (d !+! keys!x)
     d = keys!a !-! keys!(last s)
 
 byLines f = interact $ unlines . f . lines
