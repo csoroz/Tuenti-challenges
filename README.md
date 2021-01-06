@@ -1,4 +1,4 @@
 Tuenti Challenges
 =================
 
-[Tuenti contest](https://contest.tuenti.net)
+[Tuenti contest](https://contest.tuenti.net/Info/past)
